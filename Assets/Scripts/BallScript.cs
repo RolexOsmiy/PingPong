@@ -38,13 +38,8 @@ public class BallScript : MonoBehaviour {
             horizontalMove = Input.GetAxisRaw("Horizontal");
             float magnitude = rigidbody2D.velocity.magnitude;
 
-            Debug.Log("horizontalMove " + horizontalMove);
-
             if (horizontalMove == 0)
                 newDirection = rigidbody2D.velocity;
-
-            Debug.Log("magnitude " + magnitude);
-            Debug.Log("velocity.magnitude " + rigidbody2D.velocity.magnitude);
 
             if (horizontalMove > 0)
                 newDirection = rigidbody2D.velocity + new Vector2(1, 0);
@@ -52,11 +47,7 @@ public class BallScript : MonoBehaviour {
             if (horizontalMove < 0)
                 newDirection = rigidbody2D.velocity + new Vector2(-1, 0);
 
-            Debug.Log("newDirection.magnitude " + newDirection.magnitude);
-
             newDirection = Vector2.ClampMagnitude(newDirection * 100, magnitude);
-
-            Debug.Log("newDirection.magnitude " + newDirection.magnitude);
 
             rigidbody2D.velocity = Vector2.ClampMagnitude(newDirection * (1 + acceleration), maxSpeed);
 
