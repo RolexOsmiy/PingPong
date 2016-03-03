@@ -4,6 +4,7 @@ using System.Collections;
 public class MoveHorizontal : MonoBehaviour {
 
     public float maxSpeed;
+    public float sidePanelWidth;
     float halfWidth;
     float halfHeight;
 
@@ -11,7 +12,6 @@ public class MoveHorizontal : MonoBehaviour {
     void Start () {
 
         Sprite sprite = GetComponent<SpriteRenderer>().sprite;
-
         halfWidth = sprite.bounds.size.x/2;
         halfHeight = sprite.bounds.size.y/2;
 
@@ -31,13 +31,11 @@ public class MoveHorizontal : MonoBehaviour {
 
         Vector2 direction = new Vector2(x, 0).normalized;
 
-        //Debug.DrawLine(possition, direction);
-
         Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
         Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
 
-        max.x = max.x - halfWidth;
-        min.x = min.x + halfWidth;
+        max.x = max.x - halfWidth - sidePanelWidth;
+        min.x = min.x + halfWidth + sidePanelWidth;
         max.y = max.y - halfHeight;
         min.y = min.y + halfHeight;
 
