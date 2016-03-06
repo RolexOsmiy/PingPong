@@ -7,7 +7,7 @@ public class BallScript : MonoBehaviour {
     public float maxSpeed;
     public float minSpeed;
     public float acceleration;
-    public float playerTouchDeviation;
+    public float playerTouchRandomhDeviation;
     public float magnitude;
     public Vector2 velocity;
 
@@ -58,13 +58,13 @@ public class BallScript : MonoBehaviour {
 
             if (horizontalMove > 0) {
                 newDirection = rigidbody2D.velocity + Vector2.right;
-                newDirection += new Vector2(Random.Range(-playerTouchDeviation, playerTouchDeviation), Random.Range(-playerTouchDeviation, playerTouchDeviation));
+                newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
             }
 
 
             if (horizontalMove < 0) {
                 newDirection = rigidbody2D.velocity + Vector2.left;
-                newDirection += new Vector2(Random.Range(-playerTouchDeviation, playerTouchDeviation), Random.Range(-playerTouchDeviation, playerTouchDeviation));
+                newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
             }
 
 
@@ -104,7 +104,6 @@ public class BallScript : MonoBehaviour {
 
     public void MoveUp() {
 
-        Debug.Log("move up!");
         rigidbody2D.velocity = new Vector2(0, initialSpeed);
     }
 
