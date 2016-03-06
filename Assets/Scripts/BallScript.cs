@@ -5,8 +5,9 @@ public class BallScript : MonoBehaviour {
 
     public float initialSpeed;
     public float maxSpeed;
+    public float minSpeed;
     public float acceleration;
-    public float randomDeviation;
+    public float playerTouchDeviation;
     public float magnitude;
     public Vector2 velocity;
 
@@ -16,23 +17,27 @@ public class BallScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
         rigidbody2D = GetComponent<Rigidbody2D>();
-        rigidbody2D.velocity = new Vector2(0, initialSpeed);
     }
 	
 	// Update is called once per frame
 	void Update () {
 
+        magnitude = rigidbody2D.velocity.magnitude;
+        velocity = rigidbody2D.velocity;
+
+        Debug.DrawLine(gameObject.transform.position, (Vector2)gameObject.transform.position + rigidbody2D.velocity, Color.red);
+
+        if (magnitude != 0 && magnitude < minSpeed) {
+
+            rigidbody2D.velocity = rigidbody2D.velocity * (minSpeed / rigidbody2D.velocity.magnitude);
+
+        }
+
 
     }
 
     void FixedUpdate() {
-
-        magnitude = rigidbody2D.velocity.magnitude;
-        velocity = rigidbody2D.velocity;
-
-        Debug.DrawLine(gameObject.transform.position, (Vector2)gameObject.transform.position + rigidbody2D.velocity);
 
 
     }
@@ -43,9 +48,7 @@ public class BallScript : MonoBehaviour {
         magnitude = rigidbody2D.velocity.magnitude;
         velocity = rigidbody2D.velocity;
 
-        Debug.Log(velocity);
-
-        if (coll.gameObject.tag == "PlayerTag") {
+        if (coll.gameObject.tag == "PlayerPaddleTag") {
 
             horizontalMove = Input.GetAxisRaw("Horizontal");
             
@@ -53,41 +56,22 @@ public class BallScript : MonoBehaviour {
             if (horizontalMove == 0)
                 newDirection = rigidbody2D.velocity;
 
-            if (horizontalMove > 0)
+            if (horizontalMove > 0) {
                 newDirection = rigidbody2D.velocity + Vector2.right;
+                newDirection += new Vector2(Random.Range(-playerTouchDeviation, playerTouchDeviation), Random.Range(-playerTouchDeviation, playerTouchDeviation));
+            }
 
-            if (horizontalMove < 0)
+
+            if (horizontalMove < 0) {
                 newDirection = rigidbody2D.velocity + Vector2.left;
+                newDirection += new Vector2(Random.Range(-playerTouchDeviation, playerTouchDeviation), Random.Range(-playerTouchDeviation, playerTouchDeviation));
+            }
+
 
             //rigidbody2D.velocity = Vector2.ClampMagnitude(newDirection * (1 + acceleration), maxSpeed);
 
-            newDirection = newDirection * (initialSpeed / newDirection.magnitude);
+            newDirection = newDirection * (magnitude / newDirection.magnitude);
             rigidbody2D.velocity = newDirection;
-
-        }
-
-        if (coll.gameObject.tag == "WallTag")
-        {
-
-            //newDirection = new Vector2(rigidbody2D.velocity.x + Random.Range(-randomDeviation, randomDeviation), rigidbody2D.velocity.y + Random.Range(-randomDeviation, randomDeviation));
-
-            Debug.Log("Wall Collision");
-
-            //newDirection = newDirection * (initialSpeed / newDirection.magnitude);
-
-            //newDirection = newDirection * (initialSpeed / newDirection.magnitude);
-            //rigidbody2D.velocity = newDirection;
-
-            //newDirection = new Vector2(rigidbody2D.velocity.x, rigidbody2D.velocity.y + 0.2f);
-
-            //Debug.Log(newDirection);
-            //Debug.Log(newDirection.magnitude);
-            //newDirection = newDirection * (initialSpeed / newDirection.magnitude);
-
-            //Debug.Log(newDirection);
-            //Debug.Log(newDirection.magnitude);
-
-            //rigidbody2D.velocity = newDirection;
 
         }
 
@@ -100,14 +84,28 @@ public class BallScript : MonoBehaviour {
         {
             Debug.Log("Wall Collision");
             rigidbody2D.velocity = new Vector2(-rigidbody2D.velocity.x, rigidbody2D.velocity.y);
+            //rigidbody2D.velocity = new Vector2(-rigidbody2D.velocity.x + Random.Range(-0.1f, 0.1f), rigidbody2D.velocity.y + Random.Range(-0.1f, 0.1f));
         }
 
         if (coll.gameObject.tag == "RoofTag")
         {
-            Debug.Log("Wall Collision");
+            Debug.Log("Roof Collision");
             rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -rigidbody2D.velocity.y);
         }
 
+        if (coll.gameObject.tag == "PlayerPaddleTag")
+        {
+            Debug.Log("PlayerPaddleTag Collision");
+            rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -rigidbody2D.velocity.y);
+
+        }
+
+    }
+
+    public void MoveUp() {
+
+        Debug.Log("move up!");
+        rigidbody2D.velocity = new Vector2(0, initialSpeed);
     }
 
 }
