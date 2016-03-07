@@ -35,6 +35,8 @@ public class BallScript : MonoBehaviour {
         }
 
 
+
+
     }
 
     void FixedUpdate() {
@@ -98,6 +100,21 @@ public class BallScript : MonoBehaviour {
             Debug.Log("PlayerPaddleTag Collision");
             rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -rigidbody2D.velocity.y);
 
+        }
+
+        if (coll.gameObject.tag == "BlockHorizontalSurfaceTag")
+        {
+            Debug.Log("BlockHorizontalSurfaceTag Collision");
+            rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -rigidbody2D.velocity.y);
+            Destroy(coll.gameObject.transform.parent.gameObject);
+
+        }
+
+        if (coll.gameObject.tag == "BlockVerticalSurfaceTag")
+        {
+            Debug.Log("BlockVerticalSurfaceTag Collision");
+            rigidbody2D.velocity = new Vector2(-rigidbody2D.velocity.x, rigidbody2D.velocity.y);
+            Destroy(coll.gameObject.transform.parent.gameObject);
         }
 
     }

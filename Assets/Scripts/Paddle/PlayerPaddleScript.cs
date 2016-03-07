@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerPaddle : MonoBehaviour {
+public class PlayerPaddleScript : MonoBehaviour {
 
     public GameObject ball;
 
