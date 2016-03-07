@@ -4,12 +4,12 @@ using System.Collections;
 public class PlayerPaddleScript : MonoBehaviour {
 
     public GameObject ball;
-
-    float width;
-    float height;
-    GameObject initialBall;
     public float maxSpeed;
     public float sidePanelWidth;
+
+    private GameObject initialBall;
+    private float width;
+    private float height;
 
     // Use this for initialization
     void Start () {

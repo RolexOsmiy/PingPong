@@ -13,11 +13,11 @@ public class BlockScript : MonoBehaviour {
 	
 	}
 
-    void OnCollisionExit2D(Collision2D coll)
-    {
-        if (coll.gameObject.tag == "BallTag")
-            Destroy(gameObject);
-    }
+    //void OnCollisionExit2D(Collision2D coll)
+    //{
+    //    if (coll.gameObject.tag == "BallTag")
+    //        Destroy(gameObject);
+    //}
 
 
 }

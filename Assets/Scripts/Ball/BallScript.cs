@@ -15,40 +15,42 @@ public class BallScript : MonoBehaviour {
     private Rigidbody2D rigidbody2D;
     private Vector2 newDirection;
 
+
+    // used for velocity calculation
+    private Vector2 lastPosition;
+
     // Use this for initialization
     void Start () {
         rigidbody2D = GetComponent<Rigidbody2D>();
+        rigidbody2D.velocity = new Vector2(2, 2);
+
+
+
+
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        magnitude = rigidbody2D.velocity.magnitude;
-        velocity = rigidbody2D.velocity;
-
-        Debug.DrawLine(gameObject.transform.position, (Vector2)gameObject.transform.position + rigidbody2D.velocity, Color.red);
-
-        if (magnitude != 0 && magnitude < minSpeed) {
-
-            rigidbody2D.velocity = rigidbody2D.velocity * (minSpeed / rigidbody2D.velocity.magnitude);
-
-        }
-
-
-
-
     }
 
-    void FixedUpdate() {
+    void FixedUpdate()
+    {
+        magnitude = rigidbody2D.velocity.magnitude;
+
+        // Get pos 2d of the ball.
+        Vector2 position = transform.position;
+
+        // Velocity calculation. Will be used for the bounce
+        velocity = position - lastPosition;
+        lastPosition = position;
 
 
     }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-
         magnitude = rigidbody2D.velocity.magnitude;
-        velocity = rigidbody2D.velocity;
 
         if (coll.gameObject.tag == "PlayerPaddleTag") {
 
@@ -77,6 +79,25 @@ public class BallScript : MonoBehaviour {
 
         }
 
+        if (coll.gameObject.tag == "EnemyBlockTag")
+        {
+            Debug.Log("EnemyBlockTag Collision");
+
+            // Normal
+            Vector3 normal = coll.contacts[0].normal;
+
+            //Direction
+            Vector3 normalizedVelocity = velocity.normalized;
+
+            // Reflection
+            Vector3 reflection = Vector3.Reflect(normalizedVelocity, normal).normalized;
+
+            // Assign normalized reflection with the constant speed
+            rigidbody2D.velocity = new Vector2(reflection.x, reflection.y) * magnitude;
+
+            Destroy(coll.gameObject);
+        }
+
     }
 
     void OnTriggerEnter2D(Collider2D coll)
@@ -102,26 +123,18 @@ public class BallScript : MonoBehaviour {
 
         }
 
-        if (coll.gameObject.tag == "BlockHorizontalSurfaceTag")
-        {
-            Debug.Log("BlockHorizontalSurfaceTag Collision");
-            rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, -rigidbody2D.velocity.y);
-            Destroy(coll.gameObject.transform.parent.gameObject);
 
-        }
 
-        if (coll.gameObject.tag == "BlockVerticalSurfaceTag")
-        {
-            Debug.Log("BlockVerticalSurfaceTag Collision");
-            rigidbody2D.velocity = new Vector2(-rigidbody2D.velocity.x, rigidbody2D.velocity.y);
-            Destroy(coll.gameObject.transform.parent.gameObject);
-        }
+
 
     }
+
 
     public void MoveUp() {
 
         rigidbody2D.velocity = new Vector2(0, initialSpeed);
     }
+
+
 
 }
