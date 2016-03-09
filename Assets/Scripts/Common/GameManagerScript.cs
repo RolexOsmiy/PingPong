@@ -52,12 +52,12 @@ public class GameManagerScript : MonoBehaviour {
         Debug.Log("change game status");
     }
 
-    public void ChamgeGameManagerStateToGamePlay()
+    public void ChangeGameManagerStateToGamePlay()
     {
         SetGameManagerState(GameManagerState.GamePlay);
     }
 
-    public void ChamgeGameManagerStateToOpening()
+    public void ChangeGameManagerStateToOpening()
     {
         SetGameManagerState(GameManagerState.Opening);
     }

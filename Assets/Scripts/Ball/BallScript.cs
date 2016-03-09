@@ -18,13 +18,17 @@ public class BallScript : MonoBehaviour {
 
     // used for velocity calculation
     private Vector2 lastPosition;
+    //private int initialBlocks;
+    //private int countBlocks;
 
     // Use this for initialization
     void Start () {
         rigidbody2D = GetComponent<Rigidbody2D>();
         rigidbody2D.velocity = new Vector2(2, 2);
 
-
+        //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
+        //initialBlocks = blocks.Length;
+        //countBlocks = initialBlocks; 
 
 
     }
@@ -32,11 +36,24 @@ public class BallScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        magnitude = rigidbody2D.velocity.magnitude;
+
+        if (magnitude < minSpeed) {
+            rigidbody2D.velocity = rigidbody2D.velocity * (minSpeed / rigidbody2D.velocity.magnitude);
+        }
+
+        Debug.DrawLine(gameObject.transform.position, (Vector2)gameObject.transform.position + rigidbody2D.velocity, Color.red);
+
+        //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
+        //countBlocks = blocks.Length;
+
+        //Debug.Log("blocks minus = " + (initialBlocks - countBlocks));
+
     }
 
     void FixedUpdate()
     {
-        magnitude = rigidbody2D.velocity.magnitude;
+
 
         // Get pos 2d of the ball.
         Vector2 position = transform.position;
@@ -44,6 +61,8 @@ public class BallScript : MonoBehaviour {
         // Velocity calculation. Will be used for the bounce
         velocity = position - lastPosition;
         lastPosition = position;
+
+
 
 
     }
@@ -84,16 +103,18 @@ public class BallScript : MonoBehaviour {
             Debug.Log("EnemyBlockTag Collision");
 
             // Normal
-            Vector3 normal = coll.contacts[0].normal;
+            Vector2 normal = coll.contacts[0].normal;
 
             //Direction
-            Vector3 normalizedVelocity = velocity.normalized;
+            //Vector2 normalizedVelocity = velocity.normalized;
 
             // Reflection
-            Vector3 reflection = Vector3.Reflect(normalizedVelocity, normal).normalized;
+            Vector2 reflection = Vector2.Reflect(velocity, normal).normalized;
 
             // Assign normalized reflection with the constant speed
-            rigidbody2D.velocity = new Vector2(reflection.x, reflection.y) * magnitude;
+            rigidbody2D.velocity = reflection * magnitude;
+
+            //Debug.DrawLine(coll.contacts[0].point, normal, Color.green, 1f);
 
             Destroy(coll.gameObject);
         }
