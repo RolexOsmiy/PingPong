@@ -1,33 +1,38 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerPaddleScript : MonoBehaviour {
+public class PlayerControllerScript : NetworkBehaviour {
 
     public GameObject ball;
+    private GameObject initialBall;
+
     public float maxSpeed;
     public float sidePanelWidth;
 
-    private GameObject initialBall;
     private float width;
     private float height;
 
     // Use this for initialization
     void Start () {
 
-        Sprite sprite = GetComponent<SpriteRenderer>().sprite;
+        Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
         width = sprite.bounds.size.x;
         height = sprite.bounds.size.y;
 
-        InitializeBall();
-
+        CmdInitializeBall();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
+
+        if (!isLocalPlayer)
+            return;
 
         Move();
 
-        if (initialBall != null) {
+        if (initialBall != null)
+        {
 
             initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
 
@@ -40,19 +45,16 @@ public class PlayerPaddleScript : MonoBehaviour {
 
         }
 
-
-
-
-
     }
 
-    void InitializeBall() {
-
-        initialBall = (GameObject) Instantiate(ball);
+    [Command]
+    void CmdInitializeBall()
+    {
+        initialBall = (GameObject)Instantiate(ball);
         initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
-
-
+        NetworkServer.Spawn(initialBall);
     }
+
 
     void Move()
     {
@@ -60,6 +62,8 @@ public class PlayerPaddleScript : MonoBehaviour {
 
         float x = Input.GetAxisRaw("Horizontal");
         //float y = Input.GetAxisRaw("Vertical");
+
+        Debug.Log(x);
 
         Vector2 direction = new Vector2(x, 0).normalized;
 
@@ -78,6 +82,4 @@ public class PlayerPaddleScript : MonoBehaviour {
 
         transform.position = possition;
     }
-
-
 }

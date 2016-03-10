@@ -40,5 +40,4 @@ public class MenuControllerScript : MonoBehaviour {
         singlePlayerMenu.SetActive(true);
     }
 
-
 }

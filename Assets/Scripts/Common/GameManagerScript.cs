@@ -4,12 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour {
 
-    public GameObject buttonPlay;
-
     public enum GameManagerState
     {
         Opening,
-        GamePlay,
+        SinglePlayer,
+        MultiPlayer,
         GameOver,
     }
 
@@ -33,10 +32,13 @@ public class GameManagerScript : MonoBehaviour {
             case GameManagerState.Opening:
 
                 break;
-            case GameManagerState.GamePlay:
+            case GameManagerState.SinglePlayer:
 
                 SceneManager.LoadScene("Level");
+                break;
+            case GameManagerState.MultiPlayer:
 
+                SceneManager.LoadScene("Multi");
                 break;
             case GameManagerState.GameOver:
                 break;
@@ -52,14 +54,21 @@ public class GameManagerScript : MonoBehaviour {
         Debug.Log("change game status");
     }
 
-    public void ChangeGameManagerStateToGamePlay()
-    {
-        SetGameManagerState(GameManagerState.GamePlay);
-    }
+
 
     public void ChangeGameManagerStateToOpening()
     {
         SetGameManagerState(GameManagerState.Opening);
+    }
+
+    public void ChangeGameManagerStateToSinglePlayer()
+    {
+        SetGameManagerState(GameManagerState.SinglePlayer);
+    }
+
+    public void ChangeGameManagerStateToMultiPlayer()
+    {
+        SetGameManagerState(GameManagerState.MultiPlayer);
     }
 
 }
