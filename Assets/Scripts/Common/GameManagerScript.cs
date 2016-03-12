@@ -12,7 +12,7 @@ public class GameManagerScript : MonoBehaviour {
         GameOver,
     }
 
-    GameManagerState GMState;
+    private GameManagerState GMState;
 
     // Use this for initialization
     void Start () {
@@ -45,6 +45,8 @@ public class GameManagerScript : MonoBehaviour {
 
         }
 
+
+
     }
 
     public void SetGameManagerState(GameManagerState state)
@@ -53,8 +55,6 @@ public class GameManagerScript : MonoBehaviour {
         UpdateGameManagerState();
         Debug.Log("change game status");
     }
-
-
 
     public void ChangeGameManagerStateToOpening()
     {
@@ -70,5 +70,8 @@ public class GameManagerScript : MonoBehaviour {
     {
         SetGameManagerState(GameManagerState.MultiPlayer);
     }
+
+
+
 
 }

@@ -8,7 +8,7 @@ public class PlayerControllerScript : NetworkBehaviour {
     private GameObject initialBall;
 
     public float maxSpeed;
-    public float sidePanelWidth;
+    private float sidePanelWidth;
 
     private float width;
     private float height;
@@ -17,8 +17,15 @@ public class PlayerControllerScript : NetworkBehaviour {
     void Start () {
 
         Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
+        sidePanelWidth = GameObject.Find("WallLeft").GetComponent<Renderer>().bounds.size.x;
+
+        Debug.Log(sidePanelWidth);
+
         width = sprite.bounds.size.x;
         height = sprite.bounds.size.y;
+
+        if (!isLocalPlayer)
+            return;
 
         CmdInitializeBall();
     }
@@ -30,7 +37,7 @@ public class PlayerControllerScript : NetworkBehaviour {
             return;
 
         Move();
-        CmdHoldBall();
+        //CmdHoldBall();
 
 
     }
@@ -40,6 +47,7 @@ public class PlayerControllerScript : NetworkBehaviour {
     {
         initialBall = (GameObject)Instantiate(ball);
         initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
+        initialBall.transform.parent = gameObject.transform;
         NetworkServer.Spawn(initialBall);
     }
 
