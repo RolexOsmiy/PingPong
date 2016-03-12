@@ -24,7 +24,7 @@ public class BallScript : MonoBehaviour {
     // Use this for initialization
     void Start () {
         rigidbody2D = GetComponent<Rigidbody2D>();
-        rigidbody2D.velocity = new Vector2(2, 2);
+        rigidbody2D.velocity = new Vector2(0, 0);
 
         //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
         //initialBlocks = blocks.Length;
@@ -36,13 +36,7 @@ public class BallScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        magnitude = rigidbody2D.velocity.magnitude;
 
-        if (magnitude < minSpeed) {
-            rigidbody2D.velocity = rigidbody2D.velocity * (minSpeed / rigidbody2D.velocity.magnitude);
-        }
-
-        Debug.DrawLine(gameObject.transform.position, (Vector2)gameObject.transform.position + rigidbody2D.velocity, Color.red);
 
         //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
         //countBlocks = blocks.Length;
@@ -54,6 +48,14 @@ public class BallScript : MonoBehaviour {
     void FixedUpdate()
     {
 
+        magnitude = rigidbody2D.velocity.magnitude;
+
+        if (magnitude != 0 && magnitude < minSpeed)
+        {
+            rigidbody2D.velocity = rigidbody2D.velocity * (minSpeed / magnitude);
+        }
+
+        Debug.DrawLine(gameObject.transform.position, (Vector2)gameObject.transform.position + rigidbody2D.velocity, Color.red);
 
         // Get pos 2d of the ball.
         Vector2 position = transform.position;
@@ -61,9 +63,6 @@ public class BallScript : MonoBehaviour {
         // Velocity calculation. Will be used for the bounce
         velocity = position - lastPosition;
         lastPosition = position;
-
-
-
 
     }
 

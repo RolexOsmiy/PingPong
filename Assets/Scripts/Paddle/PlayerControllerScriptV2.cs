@@ -2,7 +2,8 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerControllerScript : NetworkBehaviour {
+public class PlayerControllerScriptV2 : NetworkBehaviour
+{
 
     public GameObject ball;
     private GameObject initialBall;
@@ -13,8 +14,13 @@ public class PlayerControllerScript : NetworkBehaviour {
     private float width;
     private float height;
 
+    private Rigidbody2D rigidbody2D;
+
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
+
+        rigidbody2D = GetComponent<Rigidbody2D>();
 
         Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
         width = sprite.bounds.size.x;
@@ -24,13 +30,14 @@ public class PlayerControllerScript : NetworkBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void FixedUpdate()
+    {
 
         if (!isLocalPlayer)
             return;
 
         Move();
-        CmdHoldBall();
+        HoldBall();
 
 
     }
@@ -43,34 +50,19 @@ public class PlayerControllerScript : NetworkBehaviour {
         NetworkServer.Spawn(initialBall);
     }
 
-
     void Move()
     {
         Vector2 possition = transform.position;
 
-        float x = Input.GetAxisRaw("Horizontal");
-        //float y = Input.GetAxisRaw("Vertical");
+        float moveVector = Input.GetAxisRaw("Horizontal");
 
-        Vector2 direction = new Vector2(x, 0).normalized;
+        rigidbody2D.velocity = new Vector2(moveVector * 10, rigidbody2D.velocity.y);
 
-        Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
-        Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
 
-        max.x = max.x - width / 2 - sidePanelWidth;
-        min.x = min.x + width / 2 + sidePanelWidth;
-        max.y = max.y - height / 2;
-        min.y = min.y + height / 2;
-
-        possition += direction * maxSpeed * Time.deltaTime;
-
-        possition.x = Mathf.Clamp(possition.x, min.x, max.x);
-        possition.y = Mathf.Clamp(possition.y, min.y, max.y);
-
-        transform.position = possition;
     }
 
-    [Command]
-    void CmdHoldBall()
+
+    void HoldBall()
     {
         if (initialBall != null)
         {
@@ -85,5 +77,4 @@ public class PlayerControllerScript : NetworkBehaviour {
 
         }
     }
-
 }
