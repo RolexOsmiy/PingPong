@@ -22,11 +22,11 @@ public class PlayerControllerScriptV2 : NetworkBehaviour
     // Use this for initialization
     void Start()
     {
-        Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
+        Renderer renderer = gameObject.GetComponent<Renderer>();
         sidePanelWidth = GameObject.Find("WallLeft").GetComponent<Renderer>().bounds.size.x;
 
-        width = sprite.bounds.size.x;
-        height = sprite.bounds.size.y;
+        width = renderer.bounds.size.x;
+        height = renderer.bounds.size.y;
 
         max.x = max.x - width / 2 - sidePanelWidth;
         min.x = min.x + width / 2 + sidePanelWidth;
