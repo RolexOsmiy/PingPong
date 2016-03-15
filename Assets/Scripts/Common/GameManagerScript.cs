@@ -34,7 +34,7 @@ public class GameManagerScript : MonoBehaviour {
                 break;
             case GameManagerState.SinglePlayer:
 
-                SceneManager.LoadScene("Level");
+				SceneManager.LoadScene("Level");
                 break;
             case GameManagerState.MultiPlayer:
 
@@ -61,7 +61,7 @@ public class GameManagerScript : MonoBehaviour {
         SetGameManagerState(GameManagerState.Opening);
     }
 
-    public void ChangeGameManagerStateToSinglePlayer()
+	public void ChangeGameManagerStateToSinglePlayer()
     {
         SetGameManagerState(GameManagerState.SinglePlayer);
     }
