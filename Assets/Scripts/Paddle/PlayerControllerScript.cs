@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerControllerScript : NetworkBehaviour {
+public class PlayerControllerScript : MonoBehaviour {
 
     public GameObject ball;
     private GameObject initialBall;
@@ -13,8 +12,14 @@ public class PlayerControllerScript : NetworkBehaviour {
     private float width;
     private float height;
 
+    //void onAwake() {
+    //    Network.sendRate = 1;
+    //}
+
     // Use this for initialization
     void Start () {
+
+        
 
         Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
         sidePanelWidth = GameObject.Find("WallLeft").GetComponent<Renderer>().bounds.size.x;
@@ -24,31 +29,23 @@ public class PlayerControllerScript : NetworkBehaviour {
         width = sprite.bounds.size.x;
         height = sprite.bounds.size.y;
 
-        if (!isLocalPlayer)
-            return;
-
-        CmdInitializeBall();
+        InitializeBall();
     }
 
     // Update is called once per frame
     void Update () {
-
-        if (!isLocalPlayer)
-            return;
-
         Move();
+        DoInitialFire();
         //CmdHoldBall();
 
 
     }
 
-    [Command]
-    void CmdInitializeBall()
+    void InitializeBall()
     {
         initialBall = (GameObject)Instantiate(ball);
         initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
         initialBall.transform.parent = gameObject.transform;
-        NetworkServer.Spawn(initialBall);
     }
 
 
@@ -77,20 +74,17 @@ public class PlayerControllerScript : NetworkBehaviour {
         transform.position = possition;
     }
 
-    [Command]
-    void CmdHoldBall()
-    {
+    void DoInitialFire() {
         if (initialBall != null)
         {
-
             initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
 
             if (Input.GetKey("space"))
             {
+                initialBall.transform.parent = null;
                 initialBall.GetComponent<BallScript>().MoveUp();
                 initialBall = null;
             }
-
         }
     }
 
