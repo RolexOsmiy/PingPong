@@ -73,10 +73,9 @@ public class MultiPlayerScript : MonoBehaviour {
 		}
 		Debug.Log (intialBallDeviation);
 		Debug.Log (gameObject.transform.position.y);
-		//initialBall.transform.parent = gameObject.transform;
 		initialBall.transform.position = new Vector2 (gameObject.transform.position.x, gameObject.transform.position.y + intialBallDeviation);
+		initialBall.transform.parent = gameObject.transform;
 		Debug.Log (initialBall.transform.position);
-		initialBall.transform.position = Vector2.zero;
 
     }
 
@@ -143,7 +142,7 @@ public class MultiPlayerScript : MonoBehaviour {
     {
         if (initialBall != null)
         {
-            initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
+            //initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
 
             if (Input.GetKey("space"))
             {
