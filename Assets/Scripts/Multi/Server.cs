@@ -16,8 +16,8 @@ public class Server : MonoBehaviour {
     Vector2 spawnPosition;
 
     void Start(){
-        spawnPositions.Add(new Vector2(0, -4.85f));
         spawnPositions.Add(new Vector2(0, 4.85f));
+        spawnPositions.Add(new Vector2(0, -4.85f));
     }
 	
 	// На каждый кадр
@@ -79,11 +79,17 @@ public class Server : MonoBehaviour {
 
         _go = (GameObject)Network.Instantiate(PlayerPrefab, spawnPosition, transform.rotation, 1);
 
+		//_go.transform.LookAt(Vector2.zero);
+		//Debug.Log (_go.transform.rotation);
+		//float temp = _go.transform.rotation.x; 
+		//_go.transform.rotation = (Quaternion.Euler(0,0, temp + 90));
+
+		//Debug.Log("Rotarion" + _go.transform.rotation);
 
 		//_go.transform.GetComponentInChildren<Camera>().GetComponent<Camera>().enabled = true;
 		//_go.transform.GetComponentInChildren<AudioListener>().enabled = true;
 	}
-	
+
 	// При отключении от сервера
 	void OnDisconnectedFromServer (NetworkDisconnection info) {
 		connected = false;

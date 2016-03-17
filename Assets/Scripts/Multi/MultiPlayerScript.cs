@@ -20,12 +20,18 @@ public class MultiPlayerScript : MonoBehaviour {
     private Vector2 syncStartPosition;
     private Vector2 syncEndPosition;
 
-    void onAwake()
+    void Awake()
     {
         
-
+		RotateToTarge (Vector2.zero);
 
     }
+
+	public void RotateToTarge(Vector2 targetDirection){
+		targetDirection = targetDirection - (Vector2)transform.position;
+		float angle = Mathf.Atan2 (targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
+		transform.localRotation = Quaternion.AngleAxis (angle - 90, new Vector3 (0, 0, 1));
+	}
 
     // Use this for initialization
     void Start()
@@ -61,8 +67,17 @@ public class MultiPlayerScript : MonoBehaviour {
     void InitializeBall()
     {
         initialBall = (GameObject)Instantiate(ball);
-        initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
-        initialBall.transform.parent = gameObject.transform;
+		float intialBallDeviation = height;
+		if (gameObject.transform.position.y > 0) {
+			intialBallDeviation = -intialBallDeviation;
+		}
+		Debug.Log (intialBallDeviation);
+		Debug.Log (gameObject.transform.position.y);
+		//initialBall.transform.parent = gameObject.transform;
+		initialBall.transform.position = new Vector2 (gameObject.transform.position.x, gameObject.transform.position.y + intialBallDeviation);
+		Debug.Log (initialBall.transform.position);
+		initialBall.transform.position = Vector2.zero;
+
     }
 
 
