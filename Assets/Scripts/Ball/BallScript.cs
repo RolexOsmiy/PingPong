@@ -15,7 +15,6 @@ public class BallScript : MonoBehaviour {
     private Rigidbody2D rigidbody2D;
     private Vector2 newDirection;
 
-
     // used for velocity calculation
     private Vector2 lastPosition;
     //private int initialBlocks;
@@ -30,13 +29,10 @@ public class BallScript : MonoBehaviour {
         //initialBlocks = blocks.Length;
         //countBlocks = initialBlocks; 
 
-
     }
 	
 	// Update is called once per frame
 	void Update () {
-
-
 
         //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
         //countBlocks = blocks.Length;
@@ -143,18 +139,12 @@ public class BallScript : MonoBehaviour {
 
         }
 
-
-
-
-
     }
-
 
     public void MoveUp() {
 
         rigidbody2D.velocity = new Vector2(0, initialSpeed);
     }
-
 
 
 }

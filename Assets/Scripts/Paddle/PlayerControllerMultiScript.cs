@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MultiPlayerScript : MonoBehaviour {
+public class PlayerControllerMultiScript : MonoBehaviour {
 
-    public GameObject ball;
+    public GameObject ballPrefab;
 	public GameObject playerCamera;
 	private GameObject initialPlayerCamera;
     private GameObject initialBall;
@@ -11,8 +11,8 @@ public class MultiPlayerScript : MonoBehaviour {
     public float maxSpeed;
     private float sidePanelWidth;
 
-    private float width;
-    private float height;
+    public float width;
+    public float height;
 
     private NetworkView networkView;
 
@@ -51,7 +51,7 @@ public class MultiPlayerScript : MonoBehaviour {
         width = sprite.bounds.size.x;
         height = sprite.bounds.size.y;
 
-        InitializeBall();
+        //InitializeBall();
 		InitializePlayerCamera ();
 		if(networkView.isMine){
 			initialPlayerCamera.GetComponent<Camera>().enabled = true;
@@ -69,22 +69,23 @@ public class MultiPlayerScript : MonoBehaviour {
         Debug.Log("SEND RATE = " + Network.sendRate);
         Move();
         DoInitialFire();
-        //CmdHoldBall();
 
     }
 
-    void InitializeBall()
+    public void InitializeBall()
     {
-        initialBall = (GameObject)Instantiate(ball);
-		float intialBallDeviation = height;
-		if (gameObject.transform.position.y > 0) {
-			intialBallDeviation = -intialBallDeviation;
-		}
-		Debug.Log (intialBallDeviation);
-		Debug.Log (gameObject.transform.position.y);
-		initialBall.transform.position = new Vector2 (gameObject.transform.position.x, gameObject.transform.position.y + intialBallDeviation);
+        // initialBall = (GameObject)Instantiate(ballPrefab);
+
+        float intialBallDeviation = height;
+        if (gameObject.transform.position.y > 0)
+        {
+            intialBallDeviation = -intialBallDeviation;
+        }
+
+        Vector2 spawnPosition = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + intialBallDeviation);
+
+        initialBall = (GameObject)Network.Instantiate(ballPrefab, spawnPosition, transform.rotation, 1);
 		initialBall.transform.parent = gameObject.transform;
-		Debug.Log (initialBall.transform.position);
 
     }
 
@@ -97,7 +98,6 @@ public class MultiPlayerScript : MonoBehaviour {
 		} else {
 			initialPlayerCamera.transform.position = new Vector3 (0, 0, -10);
 		}
-		//Instantiate(playerCamera , new Vector3(0, 0, 10), gameObject.transform.rotation);
 
 	} 
 

@@ -5,11 +5,12 @@ using System;
 
 public class Server : MonoBehaviour {
 	
-	public GameObject PlayerPrefab;	// Персонаж игрока
-	public string ip = "127.0.0.1";	// ip для создания или подключения к серверу
+	public GameObject playerPrefab;	// Персонаж игрока
+    public GameObject ballPrefab;
+    public string ip = "127.0.0.1";	// ip для создания или подключения к серверу
 	public string port = "5300";	// Порт
 	public bool connected;			// Статус подключения
-	private GameObject _go;			// Объект для ссылки на игрока
+	private GameObject player;			// Объект для ссылки на игрока
 	public bool _visible = false;	// Статус показа меню
 
     private List<Vector2> spawnPositions = new List<Vector2>();
@@ -77,18 +78,35 @@ public class Server : MonoBehaviour {
         //GetComponent<Camera>().enabled = false;
         //GetComponent<Camera>().gameObject.GetComponent<AudioListener>().enabled = false;
 
-        _go = (GameObject)Network.Instantiate(PlayerPrefab, spawnPosition, transform.rotation, 1);
+        player = (GameObject)Network.Instantiate(playerPrefab, spawnPosition, transform.rotation, 1);
+        //player.GetComponent<PlayerControllerMultiScript>().InitializeBall();
 
-		//_go.transform.LookAt(Vector2.zero);
-		//Debug.Log (_go.transform.rotation);
-		//float temp = _go.transform.rotation.x; 
-		//_go.transform.rotation = (Quaternion.Euler(0,0, temp + 90));
+        //CreateInitialBall();
 
-		//Debug.Log("Rotarion" + _go.transform.rotation);
+        //_go.transform.LookAt(Vector2.zero);
+        //Debug.Log (_go.transform.rotation);
+        //float temp = _go.transform.rotation.x; 
+        //_go.transform.rotation = (Quaternion.Euler(0,0, temp + 90));
 
-		//_go.transform.GetComponentInChildren<Camera>().GetComponent<Camera>().enabled = true;
-		//_go.transform.GetComponentInChildren<AudioListener>().enabled = true;
-	}
+        //Debug.Log("Rotarion" + _go.transform.rotation);
+
+        //_go.transform.GetComponentInChildren<Camera>().GetComponent<Camera>().enabled = true;
+        //_go.transform.GetComponentInChildren<AudioListener>().enabled = true;
+    }
+
+    void CreateInitialBall() {
+        float height = player.GetComponent<PlayerControllerMultiScript>().height;
+
+        float intialBallDeviation = height;
+        if (player.transform.position.y > 0)
+        {
+            intialBallDeviation = -intialBallDeviation;
+        }
+
+        Vector2 ballspawnPosition = new Vector2(player.transform.position.x, player.transform.position.y + intialBallDeviation);
+        player = (GameObject)Network.Instantiate(ballPrefab, ballspawnPosition, transform.rotation, 1);
+        //player.transform.parent = gameObject.transform;
+    }
 
 	// При отключении от сервера
 	void OnDisconnectedFromServer (NetworkDisconnection info) {
@@ -103,4 +121,5 @@ public class Server : MonoBehaviour {
 		Network.RemoveRPCs(pl);
 		Network.DestroyPlayerObjects(pl);
 	}
+
 }
