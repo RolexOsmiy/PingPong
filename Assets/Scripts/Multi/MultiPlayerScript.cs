@@ -4,6 +4,8 @@ using System.Collections;
 public class MultiPlayerScript : MonoBehaviour {
 
     public GameObject ball;
+	public GameObject playerCamera;
+	private GameObject initialPlayerCamera;
     private GameObject initialBall;
 
     public float maxSpeed;
@@ -50,6 +52,13 @@ public class MultiPlayerScript : MonoBehaviour {
         height = sprite.bounds.size.y;
 
         InitializeBall();
+		InitializePlayerCamera ();
+		if(networkView.isMine){
+			initialPlayerCamera.GetComponent<Camera>().enabled = true;
+		}
+		else{
+			initialPlayerCamera.GetComponent<Camera>().enabled = false;
+		}
     }
 
     // Update is called once per frame
@@ -79,6 +88,18 @@ public class MultiPlayerScript : MonoBehaviour {
 
     }
 
+	void InitializePlayerCamera () {
+		initialPlayerCamera = (GameObject)Instantiate (playerCamera);
+		initialPlayerCamera.transform.rotation = gameObject.transform.rotation;
+		if (gameObject.transform.position.y > 0) {
+			initialPlayerCamera.transform.Rotate (0, -180, 0);
+			initialPlayerCamera.transform.position = new Vector3 (0, 0, 10);
+		} else {
+			initialPlayerCamera.transform.position = new Vector3 (0, 0, -10);
+		}
+		//Instantiate(playerCamera , new Vector3(0, 0, 10), gameObject.transform.rotation);
+
+	} 
 
     void Move()
     {
