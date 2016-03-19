@@ -23,7 +23,15 @@ public class BallScript : MonoBehaviour {
     // Use this for initialization
     void Start () {
         rigidbody2D = GetComponent<Rigidbody2D>();
-        rigidbody2D.velocity = new Vector2(0, 0);
+
+        float tmpSpd = 4;
+
+        if (gameObject.transform.position.y > 0)
+        {
+            tmpSpd = -tmpSpd;
+        }
+
+        rigidbody2D.velocity = new Vector2(0, -tmpSpd);
 
         //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
         //initialBlocks = blocks.Length;

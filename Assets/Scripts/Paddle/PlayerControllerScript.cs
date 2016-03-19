@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerControllerScript : MonoBehaviour {
+public class PlayerControllerScript : NetworkBehaviour {
 
     public GameObject ball;
     private GameObject initialBall;
@@ -12,14 +13,15 @@ public class PlayerControllerScript : MonoBehaviour {
     private float width;
     private float height;
 
-    //void onAwake() {
-    //    Network.sendRate = 1;
-    //}
+    void Awake()
+    {
+        GetComponent<NetworkTransform>().sendInterval = 0.001f;
+
+        //GetComponent<NetworkTransformVisualizer>().visualizerPrefab = gameObject;
+    }
 
     // Use this for initialization
     void Start () {
-
-        
 
         Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
         sidePanelWidth = GameObject.Find("WallLeft").GetComponent<Renderer>().bounds.size.x;
@@ -29,23 +31,33 @@ public class PlayerControllerScript : MonoBehaviour {
         width = sprite.bounds.size.x;
         height = sprite.bounds.size.y;
 
-        InitializeBall();
+        //CmdInitializeBall();
     }
 
     // Update is called once per frame
     void Update () {
-        Move();
-        DoInitialFire();
+
+        Debug.Log(GetComponent<NetworkTransform>().sendInterval);
+
+        if (isLocalPlayer) {
+            Move();
+            //CmdDoInitialFire();
+            Fire();
+        }
+
+
         //CmdHoldBall();
 
 
     }
 
-    void InitializeBall()
+    [Command]
+    void CmdInitializeBall()
     {
         initialBall = (GameObject)Instantiate(ball);
         initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
         initialBall.transform.parent = gameObject.transform;
+        NetworkServer.Spawn(initialBall);        
     }
 
 
@@ -74,7 +86,8 @@ public class PlayerControllerScript : MonoBehaviour {
         transform.position = possition;
     }
 
-    void DoInitialFire() {
+    [Command]
+    void CmdDoInitialFire() {
         if (initialBall != null)
         {
             initialBall.transform.position = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
@@ -86,6 +99,30 @@ public class PlayerControllerScript : MonoBehaviour {
                 initialBall = null;
             }
         }
+    }
+
+    void Fire() {
+        if (Input.GetKeyDown("space"))
+        {
+            CmdFire();
+        }
+    }
+
+    [Command]
+    void CmdFire() {
+
+        float intialBallDeviation = height;
+        if (gameObject.transform.position.y > 0)
+        {
+            intialBallDeviation = -intialBallDeviation;
+        }
+
+        initialBall = (GameObject)Instantiate(ball, new Vector2(transform.position.x, transform.position.y + intialBallDeviation), transform.rotation);
+            //initialBall.GetComponent<BallScript>().MoveUp();
+            initialBall.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -4);
+            NetworkServer.Spawn(initialBall);
+            initialBall = null;
+
     }
 
 }
