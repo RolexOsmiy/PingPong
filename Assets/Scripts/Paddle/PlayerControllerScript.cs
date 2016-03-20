@@ -7,6 +7,9 @@ public class PlayerControllerScript : NetworkBehaviour {
     public GameObject ball;
     private GameObject initialBall;
 
+	public GameObject playerCamera;
+	private GameObject initialPlayerCamera;
+
     public float maxSpeed;
     private float sidePanelWidth;
 
@@ -30,6 +33,10 @@ public class PlayerControllerScript : NetworkBehaviour {
 
         width = sprite.bounds.size.x;
         height = sprite.bounds.size.y;
+
+		if (isLocalPlayer) {
+			createPlayerCamera ();
+		}
 
         //CmdInitializeBall();
     }
@@ -59,7 +66,18 @@ public class PlayerControllerScript : NetworkBehaviour {
         initialBall.transform.parent = gameObject.transform;
         NetworkServer.Spawn(initialBall);        
     }
-
+		
+	void createPlayerCamera(){
+		initialPlayerCamera = (GameObject)Instantiate(playerCamera);
+		if (gameObject.transform.position.y > 0) {
+			initialPlayerCamera.transform.position = new Vector3 (0, 0, 10);
+			initialPlayerCamera.transform.Rotate (0, 180, 180);
+		} else {
+			initialPlayerCamera.transform.position = new Vector3 (0, 0, -10);
+			initialPlayerCamera.transform.Rotate (0, 0, 0);
+		}
+		NetworkServer.Spawn(initialPlayerCamera);
+	}
 
     void Move()
     {
