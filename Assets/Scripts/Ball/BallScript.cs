@@ -26,8 +26,8 @@ public class BallScript : NetworkBehaviour {
 
     void Awake()
     {
-        GetComponent<NetworkTransform>().sendInterval = 0.05f;
-        Debug.Log(GetComponent<NetworkTransform>().sendInterval);
+        //GetComponent<NetworkTransform>().sendInterval = 0.05f;
+        //Debug.Log(GetComponent<NetworkTransform>().sendInterval);
 
     }
 
