@@ -21,8 +21,7 @@ public class PlayerControllerScript : NetworkBehaviour {
 
     void Awake()
     {
-        GetComponent<NetworkTransform>().sendInterval = 0.001f;
-        Debug.Log(GetComponent<NetworkTransform>().sendInterval);
+
 
         Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
         width = sprite.bounds.size.x;
@@ -68,14 +67,13 @@ public class PlayerControllerScript : NetworkBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void FixedUpdate () {
 
         if (isLocalPlayer) {
             Move();
             //CmdDoInitialFire();
             Fire();
         }
-
 
         //CmdHoldBall();
 
@@ -112,7 +110,9 @@ public class PlayerControllerScript : NetworkBehaviour {
 
         Vector2 direction = new Vector2(x, 0).normalized;
 
-        possition += direction * maxSpeed * Time.deltaTime;
+        possition = Vector2.Lerp(possition, possition + direction * maxSpeed, Time.deltaTime);
+
+        //possition += direction * maxSpeed * Time.deltaTime;
 
         possition.x = Mathf.Clamp(possition.x, min.x, max.x);
         possition.y = Mathf.Clamp(possition.y, min.y, max.y);

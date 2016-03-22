@@ -37,7 +37,7 @@ public class BallScript : NetworkBehaviour {
 
         float tmpSpd = 4;
 
-        if (gameObject.transform.position.y > 0)
+        if (gameObject.transform.position.y < 0)
         {
             tmpSpd = -tmpSpd;
         }
@@ -87,7 +87,9 @@ public class BallScript : NetworkBehaviour {
         if (coll.gameObject.tag == "PlayerPaddleTag") {
 
             //horizontalMove = Input.GetAxisRaw("Horizontal");
-            
+
+            newDirection = rigidbody2D.velocity;
+
 
             //if (horizontalMove == 0)
             //    newDirection = rigidbody2D.velocity;
@@ -106,8 +108,14 @@ public class BallScript : NetworkBehaviour {
 
             //rigidbody2D.velocity = Vector2.ClampMagnitude(newDirection * (1 + acceleration), maxSpeed);
 
+            Debug.Log(newDirection);
+            Debug.Log(magnitude);
+            Debug.Log(rigidbody2D.velocity);
+
             newDirection = newDirection * (magnitude / newDirection.magnitude);
             rigidbody2D.velocity = newDirection;
+
+            Debug.Log(newDirection);
 
         }
 
