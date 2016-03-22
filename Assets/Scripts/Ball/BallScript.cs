@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class BallScript : MonoBehaviour {
+public class BallScript : NetworkBehaviour {
 
     public float initialSpeed;
     public float maxSpeed;
@@ -19,6 +20,16 @@ public class BallScript : MonoBehaviour {
     private Vector2 lastPosition;
     //private int initialBlocks;
     //private int countBlocks;
+
+    //[SyncVar]
+    //public NetworkInstanceId parentNetId;
+
+    void Awake()
+    {
+        //GetComponent<NetworkTransform>().sendInterval = 0.05f;
+        //Debug.Log(GetComponent<NetworkTransform>().sendInterval);
+
+    }
 
     // Use this for initialization
     void Start () {
@@ -46,7 +57,6 @@ public class BallScript : MonoBehaviour {
         //countBlocks = blocks.Length;
 
         //Debug.Log("blocks minus = " + (initialBlocks - countBlocks));
-
     }
 
     void FixedUpdate()
@@ -76,22 +86,22 @@ public class BallScript : MonoBehaviour {
 
         if (coll.gameObject.tag == "PlayerPaddleTag") {
 
-            horizontalMove = Input.GetAxisRaw("Horizontal");
+            //horizontalMove = Input.GetAxisRaw("Horizontal");
             
 
-            if (horizontalMove == 0)
-                newDirection = rigidbody2D.velocity;
+            //if (horizontalMove == 0)
+            //    newDirection = rigidbody2D.velocity;
 
-            if (horizontalMove > 0) {
-                newDirection = rigidbody2D.velocity + Vector2.right;
-                newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
-            }
+            //if (horizontalMove > 0) {
+            //    newDirection = rigidbody2D.velocity + Vector2.right;
+            //    newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
+            //}
 
 
-            if (horizontalMove < 0) {
-                newDirection = rigidbody2D.velocity + Vector2.left;
-                newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
-            }
+            //if (horizontalMove < 0) {
+            //    newDirection = rigidbody2D.velocity + Vector2.left;
+            //    newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
+            //}
 
 
             //rigidbody2D.velocity = Vector2.ClampMagnitude(newDirection * (1 + acceleration), maxSpeed);
@@ -152,6 +162,12 @@ public class BallScript : MonoBehaviour {
     public void MoveUp() {
 
         rigidbody2D.velocity = new Vector2(0, initialSpeed);
+    }
+
+    public override void OnStartClient()
+    {
+        //GameObject parentObject = ClientScene.FindLocalObject(parentNetId);
+        //transform.SetParent(parentObject.transform);
     }
 
 

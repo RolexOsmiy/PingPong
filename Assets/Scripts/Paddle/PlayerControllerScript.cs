@@ -7,15 +7,45 @@ public class PlayerControllerScript : NetworkBehaviour {
     public GameObject ball;
     private GameObject initialBall;
 
+	public GameObject playerCamera;
+	private GameObject initialPlayerCamera;
+
     public float maxSpeed;
     private float sidePanelWidth;
 
     private float width;
     private float height;
 
+    Vector2 min;
+    Vector2 max;
+
     void Awake()
     {
         GetComponent<NetworkTransform>().sendInterval = 0.001f;
+        Debug.Log(GetComponent<NetworkTransform>().sendInterval);
+
+        Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
+        width = sprite.bounds.size.x;
+        height = sprite.bounds.size.y;
+
+        GameObject gameZone = GameObject.Find("GameZone");
+
+        Sprite gameZoneSprite = gameZone.GetComponent<SpriteRenderer>().sprite;
+        float gameZoneWidth = gameZoneSprite.bounds.size.x * gameZone.transform.localScale.x;
+        float gameZoneheight = gameZoneSprite.bounds.size.y * gameZone.transform.localScale.y;
+
+        Debug.Log(gameZoneWidth);
+        Debug.Log(gameZoneheight);
+
+
+
+        min = new Vector2(-gameZoneWidth/2, -gameZoneheight/2);
+        max = new Vector2(gameZoneWidth/2, gameZoneheight/2);
+
+        max.x = max.x - width / 2;
+        min.x = min.x + width / 2;
+        max.y = max.y - height / 2;
+        min.y = min.y + height / 2;
 
         //GetComponent<NetworkTransformVisualizer>().visualizerPrefab = gameObject;
     }
@@ -23,21 +53,22 @@ public class PlayerControllerScript : NetworkBehaviour {
     // Use this for initialization
     void Start () {
 
-        Sprite sprite = gameObject.GetComponent<SpriteRenderer>().sprite;
+
         sidePanelWidth = GameObject.Find("WallLeft").GetComponent<Renderer>().bounds.size.x;
 
-        Debug.Log(sidePanelWidth);
+        //Debug.Log(sidePanelWidth);
 
-        width = sprite.bounds.size.x;
-        height = sprite.bounds.size.y;
+
+
+		if (isLocalPlayer) {
+			createPlayerCamera ();
+		}
 
         //CmdInitializeBall();
     }
 
     // Update is called once per frame
     void Update () {
-
-        Debug.Log(GetComponent<NetworkTransform>().sendInterval);
 
         if (isLocalPlayer) {
             Move();
@@ -59,7 +90,18 @@ public class PlayerControllerScript : NetworkBehaviour {
         initialBall.transform.parent = gameObject.transform;
         NetworkServer.Spawn(initialBall);        
     }
-
+		
+	void createPlayerCamera(){
+		initialPlayerCamera = (GameObject)Instantiate(playerCamera);
+		if (gameObject.transform.position.y > 0) {
+			initialPlayerCamera.transform.position = new Vector3 (0, 0, 10);
+			initialPlayerCamera.transform.Rotate (0, 180, 180);
+		} else {
+			initialPlayerCamera.transform.position = new Vector3 (0, 0, -10);
+			initialPlayerCamera.transform.Rotate (0, 0, 0);
+		}
+		NetworkServer.Spawn(initialPlayerCamera);
+	}
 
     void Move()
     {
@@ -69,14 +111,6 @@ public class PlayerControllerScript : NetworkBehaviour {
         //float y = Input.GetAxisRaw("Vertical");
 
         Vector2 direction = new Vector2(x, 0).normalized;
-
-        Vector2 min = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
-        Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
-
-        max.x = max.x - width / 2 - sidePanelWidth;
-        min.x = min.x + width / 2 + sidePanelWidth;
-        max.y = max.y - height / 2;
-        min.y = min.y + height / 2;
 
         possition += direction * maxSpeed * Time.deltaTime;
 
@@ -120,6 +154,7 @@ public class PlayerControllerScript : NetworkBehaviour {
         initialBall = (GameObject)Instantiate(ball, new Vector2(transform.position.x, transform.position.y + intialBallDeviation), transform.rotation);
             //initialBall.GetComponent<BallScript>().MoveUp();
             initialBall.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -4);
+            //initialBall.GetComponent<BallScript>().parentNetId = GetComponent<NetworkIdentity>().netId;
             NetworkServer.Spawn(initialBall);
             initialBall = null;
 
