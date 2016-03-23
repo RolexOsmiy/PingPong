@@ -2,6 +2,7 @@
 using UnityEngine.Networking;
 using System.Collections;
 
+[NetworkSettings(channel = 0, sendInterval = 0.02f)]
 public class BallScript : NetworkBehaviour {
 
     public float initialSpeed;
