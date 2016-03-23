@@ -139,12 +139,19 @@ public class PlayerControllerScript : NetworkBehaviour {
     void Fire() {
         if (Input.GetKeyDown("space"))
         {
-            CmdFire();
+            if (!isLocalPlayer)
+            {
+                CmdFire(true);
+            }
+            else
+            {
+                CmdFire(false);
+            }
         }
     }
 
     [Command]
-    void CmdFire() {
+    void CmdFire(bool isServer) {
 
         float intialBallDeviation = height;
         if (gameObject.transform.position.y > 0)
@@ -153,11 +160,11 @@ public class PlayerControllerScript : NetworkBehaviour {
         }
 
         initialBall = (GameObject)Instantiate(ball, new Vector2(transform.position.x, transform.position.y + intialBallDeviation), transform.rotation);
-            //initialBall.GetComponent<BallScript>().MoveUp();
-            initialBall.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -4);
-            //initialBall.GetComponent<BallScript>().parentNetId = GetComponent<NetworkIdentity>().netId;
-            NetworkServer.Spawn(initialBall);
-            initialBall = null;
+        //initialBall.GetComponent<BallScript>().MoveUp();
+        initialBall.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -4);
+        //initialBall.GetComponent<BallScript>().parentNetId = GetComponent<NetworkIdentity>().netId;
+        NetworkServer.Spawn(initialBall);
+        initialBall = null;
 
     }
 

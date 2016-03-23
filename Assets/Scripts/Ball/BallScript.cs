@@ -2,7 +2,7 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-[NetworkSettings(channel = 0, sendInterval = 0.02f)]
+//[NetworkSettings(channel = 0, sendInterval = 0.02f)]
 public class BallScript : NetworkBehaviour {
 
     public float initialSpeed;
@@ -29,22 +29,32 @@ public class BallScript : NetworkBehaviour {
     {
         //GetComponent<NetworkTransform>().sendInterval = 0.05f;
         //Debug.Log(GetComponent<NetworkTransform>().sendInterval);
-
+        
     }
 
     // Use this for initialization
     void Start () {
-        rigidbody2D = GetComponent<Rigidbody2D>();
-
-        float tmpSpd = 4;
-
-        if (gameObject.transform.position.y < 0)
+        if (isLocalPlayer)
         {
-            tmpSpd = -tmpSpd;
+            Rigidbody2D rigidBody2D = GetComponent<Rigidbody2D>();
+            Destroy(rigidBody2D);
+            GetComponent<NetworkTransform>().enabled = false;
+            GetComponent<BallSyncPosition>().enabled = true;
         }
+        else
+        {
+            rigidbody2D = GetComponent<Rigidbody2D>();
 
-        rigidbody2D.velocity = new Vector2(0, -tmpSpd);
 
+            float tmpSpd = 4;
+
+            if (gameObject.transform.position.y < 0)
+            {
+                tmpSpd = -tmpSpd;
+            }
+
+            rigidbody2D.velocity = new Vector2(0, -tmpSpd);
+        }
         //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
         //initialBlocks = blocks.Length;
         //countBlocks = initialBlocks; 
