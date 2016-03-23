@@ -16,6 +16,7 @@ public class PaddleSyncPosition : NetworkBehaviour {
 
     void Awake() {
         paddleTransform = gameObject.transform;
+        syncPosition = paddleTransform.position;
     }
 
 	// Use this for initialization

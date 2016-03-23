@@ -9,11 +9,6 @@ public class CameraAspectsAdapter : MonoBehaviour {
         float screenHeight = 2f * camera.orthographicSize;
         float screenwidth = screenHeight * camera.aspect;
 
-        Debug.Log(screenHeight);
-        Debug.Log(screenwidth);
-
-        Debug.Log(16 / screenwidth);
-
         gameObject.GetComponent<Camera>().orthographicSize = camera.orthographicSize * 16 / screenwidth;
     }
 

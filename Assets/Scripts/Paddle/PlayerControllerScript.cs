@@ -34,11 +34,6 @@ public class PlayerControllerScript : NetworkBehaviour {
         float gameZoneWidth = gameZoneSprite.bounds.size.x * gameZone.transform.localScale.x;
         float gameZoneheight = gameZoneSprite.bounds.size.y * gameZone.transform.localScale.y;
 
-        Debug.Log(gameZoneWidth);
-        Debug.Log(gameZoneheight);
-
-
-
         min = new Vector2(-gameZoneWidth/2, -gameZoneheight/2);
         max = new Vector2(gameZoneWidth/2, gameZoneheight/2);
 
@@ -67,10 +62,11 @@ public class PlayerControllerScript : NetworkBehaviour {
         //CmdInitializeBall();
     }
 
-    // Update is called once per frame
-    void FixedUpdate () {
+    void Update()
+    {
 
-        if (isLocalPlayer) {
+        if (isLocalPlayer)
+        {
             Move();
             //CmdDoInitialFire();
             Fire();
@@ -80,6 +76,20 @@ public class PlayerControllerScript : NetworkBehaviour {
 
 
     }
+
+    // Update is called once per frame
+    //void FixedUpdate () {
+
+    //    if (isLocalPlayer) {
+    //        Move();
+    //        //CmdDoInitialFire();
+    //        Fire();
+    //    }
+
+    //    //CmdHoldBall();
+
+
+    //}
 
     [Command]
     void CmdInitializeBall()
@@ -153,11 +163,13 @@ public class PlayerControllerScript : NetworkBehaviour {
         }
 
         initialBall = (GameObject)Instantiate(ball, new Vector2(transform.position.x, transform.position.y + intialBallDeviation), transform.rotation);
-            //initialBall.GetComponent<BallScript>().MoveUp();
-            initialBall.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -4);
-            //initialBall.GetComponent<BallScript>().parentNetId = GetComponent<NetworkIdentity>().netId;
-            NetworkServer.Spawn(initialBall);
-            initialBall = null;
+        //initialBall.GetComponent<BallScript>().MoveUp();
+        //initialBall.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -4);
+        //initialBall.GetComponent<BallScript>().parentNetId = GetComponent<NetworkIdentity>().netId;
+
+        NetworkServer.Spawn(initialBall);
+        //NetworkServer.SpawnWithClientAuthority(initialBall, base.connectionToClient);
+        initialBall = null;
 
     }
 

@@ -10,7 +10,7 @@ public class BallSyncPosition : NetworkBehaviour
     public float rotationLerpRate = 15;
     private Transform ballTransform;
     [SyncVar]
-    private Vector2 syncPosition;
+    private Vector2 syncPosition = new Vector2(3,3);
     [SyncVar]
     private Quaternion syncRotation;
     [SyncVar]
@@ -22,6 +22,7 @@ public class BallSyncPosition : NetworkBehaviour
     void Awake()
     {
         ballTransform = gameObject.transform;
+        syncPosition = ballTransform.position;
     }
 
     // Use this for initialization
@@ -30,15 +31,16 @@ public class BallSyncPosition : NetworkBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
 
+    // Update is called once per frame
+    void Update()
+    {
+        Debug.Log("syncPosition = " + syncPosition);
         TranmitPosition();
         LerpPosition();
 
-        LerpRotation();
-        TransmitRotation();
+        //LerpRotation();
+        //TransmitRotation();
 
     }
 
@@ -62,7 +64,7 @@ public class BallSyncPosition : NetworkBehaviour
     [ClientCallback]
     void TranmitPosition()
     {
-        if (isLocalPlayer)
+        if (isServer)
         {
             CmdProvidePosotionToServer(ballTransform.position);
         }

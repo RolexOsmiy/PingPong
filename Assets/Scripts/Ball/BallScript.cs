@@ -34,16 +34,23 @@ public class BallScript : NetworkBehaviour {
 
     // Use this for initialization
     void Start () {
-        rigidbody2D = GetComponent<Rigidbody2D>();
 
-        float tmpSpd = 4;
+        if (isServer) {
 
-        if (gameObject.transform.position.y < 0)
-        {
-            tmpSpd = -tmpSpd;
+            rigidbody2D = GetComponent<Rigidbody2D>();
+
+            float tmpSpd = 4;
+
+            if (gameObject.transform.position.y < 0)
+            {
+                tmpSpd = -tmpSpd;
+            }
+
+            rigidbody2D.velocity = new Vector2(0, -tmpSpd);
+
         }
 
-        rigidbody2D.velocity = new Vector2(0, -tmpSpd);
+
 
         //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
         //initialBlocks = blocks.Length;
