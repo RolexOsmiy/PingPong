@@ -2,11 +2,11 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-[NetworkSettings(channel = 0, sendInterval = 0.02f)]
+[NetworkSettings(channel = 0, sendInterval = 0.01f)]
 public class BallSyncPosition : NetworkBehaviour
 {
 
-    public float transformLerpRate = 15;
+    public float transformLerpRate = 30f;
     public float rotationLerpRate = 15;
     private Transform ballTransform;
     [SyncVar]
@@ -50,8 +50,8 @@ public class BallSyncPosition : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            //paddleTransform.position = Vector2.Lerp(paddleTransform.position, syncPosition, Time.deltaTime * transformLerpRate);
-            ballTransform.position = syncPosition;
+            ballTransform.position = Vector2.Lerp(ballTransform.position, syncPosition, Time.deltaTime * transformLerpRate);
+            //ballTransform.position = syncPosition;
         }
     }
 
