@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class BallScript : MonoBehaviour {
+[NetworkSettings(channel = 0, sendInterval = 0.02f)]
+public class BallScript : NetworkBehaviour {
 
     public float initialSpeed;
     public float maxSpeed;
@@ -20,18 +22,35 @@ public class BallScript : MonoBehaviour {
     //private int initialBlocks;
     //private int countBlocks;
 
+    //[SyncVar]
+    //public NetworkInstanceId parentNetId;
+
+    void Awake()
+    {
+        //GetComponent<NetworkTransform>().sendInterval = 0.05f;
+        //Debug.Log(GetComponent<NetworkTransform>().sendInterval);
+
+    }
+
     // Use this for initialization
     void Start () {
-        rigidbody2D = GetComponent<Rigidbody2D>();
 
-        float tmpSpd = 4;
+        if (isServer) {
 
-        if (gameObject.transform.position.y > 0)
-        {
-            tmpSpd = -tmpSpd;
+            rigidbody2D = GetComponent<Rigidbody2D>();
+
+            float tmpSpd = 4;
+
+            if (gameObject.transform.position.y < 0)
+            {
+                tmpSpd = -tmpSpd;
+            }
+
+            rigidbody2D.velocity = new Vector2(0, -tmpSpd);
+
         }
 
-        rigidbody2D.velocity = new Vector2(0, -tmpSpd);
+
 
         //GameObject[] blocks = GameObject.FindGameObjectsWithTag("EnemyBlockTag");
         //initialBlocks = blocks.Length;
@@ -46,7 +65,6 @@ public class BallScript : MonoBehaviour {
         //countBlocks = blocks.Length;
 
         //Debug.Log("blocks minus = " + (initialBlocks - countBlocks));
-
     }
 
     void FixedUpdate()
@@ -76,28 +94,36 @@ public class BallScript : MonoBehaviour {
 
         if (coll.gameObject.tag == "PlayerPaddleTag") {
 
-            horizontalMove = Input.GetAxisRaw("Horizontal");
-            
+            //horizontalMove = Input.GetAxisRaw("Horizontal");
 
-            if (horizontalMove == 0)
-                newDirection = rigidbody2D.velocity;
-
-            if (horizontalMove > 0) {
-                newDirection = rigidbody2D.velocity + Vector2.right;
-                newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
-            }
+            newDirection = rigidbody2D.velocity;
 
 
-            if (horizontalMove < 0) {
-                newDirection = rigidbody2D.velocity + Vector2.left;
-                newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
-            }
+            //if (horizontalMove == 0)
+            //    newDirection = rigidbody2D.velocity;
+
+            //if (horizontalMove > 0) {
+            //    newDirection = rigidbody2D.velocity + Vector2.right;
+            //    newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
+            //}
+
+
+            //if (horizontalMove < 0) {
+            //    newDirection = rigidbody2D.velocity + Vector2.left;
+            //    newDirection += new Vector2(Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation), Random.Range(-playerTouchRandomhDeviation, playerTouchRandomhDeviation));
+            //}
 
 
             //rigidbody2D.velocity = Vector2.ClampMagnitude(newDirection * (1 + acceleration), maxSpeed);
 
+            Debug.Log(newDirection);
+            Debug.Log(magnitude);
+            Debug.Log(rigidbody2D.velocity);
+
             newDirection = newDirection * (magnitude / newDirection.magnitude);
             rigidbody2D.velocity = newDirection;
+
+            Debug.Log(newDirection);
 
         }
 
@@ -152,6 +178,12 @@ public class BallScript : MonoBehaviour {
     public void MoveUp() {
 
         rigidbody2D.velocity = new Vector2(0, initialSpeed);
+    }
+
+    public override void OnStartClient()
+    {
+        //GameObject parentObject = ClientScene.FindLocalObject(parentNetId);
+        //transform.SetParent(parentObject.transform);
     }
 
 
